@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+  <record id="studio_customization.usb_connector_type_g_ef3e8062-8f0d-484b-8a90-4f70bccbc9ca" model="ir.model.access" context="{'studio': True}">
+    <field name="active" eval="True"/>
+    <field name="group_id" ref="base.group_system"/>
+    <field name="model_id" ref="studio_customization.usb_connector_type_977ab801-cf77-4ad2-a7b2-1f9f314a4579"/>
+    <field name="name">USB Connector Type group_system</field>
+    <field name="perm_create" eval="True"/>
+    <field name="perm_read" eval="True"/>
+    <field name="perm_unlink" eval="True"/>
+    <field name="perm_write" eval="True"/>
+  </record>
+  <record id="studio_customization.usb_connector_type_g_35789083-ce50-4ccb-8eac-a83c2e1c93f8" model="ir.model.access" context="{'studio': True}">
+    <field name="active" eval="True"/>
+    <field name="group_id" ref="base.group_user"/>
+    <field name="model_id" ref="studio_customization.usb_connector_type_977ab801-cf77-4ad2-a7b2-1f9f314a4579"/>
+    <field name="name">USB Connector Type group_user</field>
+    <field name="perm_create" eval="False"/>
+    <field name="perm_read" eval="True"/>
+    <field name="perm_unlink" eval="False"/>
+    <field name="perm_write" eval="False"/>
+  </record>
+</odoo>

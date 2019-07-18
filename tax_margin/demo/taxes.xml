@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<record id="margin_10_tax" model="account.tax">
+    <field name="name">Tax sur marge 10%</field>
+    <field name="amount">10.0</field>
+    <field name="on_margin" eval="True"/>
+    <field name="amount_type">margin</field>
+    <field name="price_include" eval="True"/>
+</record>
+
+</odoo>

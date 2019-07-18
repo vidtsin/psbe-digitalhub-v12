@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="invoice_line_tax_margin" inherit_id='purchase.portal_my_purchase_order'  priority="10">
+        <xpath expr="//span[@t-field='ol.price_subtotal']/.." position="replace">
+            <td class="text-right">
+                <span t-esc="ol.price_unit * ol.quantity" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+            </td>
+        </xpath>
+    </template>
+
+    <template id="report_invoice_document" inherit_id="account.report_invoice_document" priority="10">
+         <data inherit_id="account.report_invoice_document" priority="999">
+             <xpath expr="//div[@id='total']//t[@t-foreach]" position="attributes">
+                 <attribute name="t-foreach">o.amount_by_group_wo_margin_tax</attribute>
+             </xpath>
+             <xpath expr="//div[@id='total']/div/table" position="replace">
+                <table t-if="o.on_margin" class="table-condensed" style="min-width: 250px;max-width: 400px;">
+                    <tr class="border-black">
+                        <td><strong>Total</strong></td>
+                        <td class="text-right">
+                            <t t-set="total" t-value="sum([l.price_unit * l.quantity for l in o.mapped('invoice_line_ids')])"/>
+                            <span t-esc="total" t-options="{&quot;widget&quot;: &quot;monetary&quot;,&quot;display_currency&quot;: o.currency_id}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span>* Livraison soumise au régime particulier d'imposition de la marge bénéficiaire. TVA non déductible en vertu de l'article 58, § 4, du Code de la TVA</span>
+                        </td>
+                    </tr>
+                </table>
+                <table t-if="not o.on_margin" class="table-condensed" style="min-width: 250px;max-width: 400px;">
+                    <tr class="border-black" style="border-bottom:1px solid #dddddd;">
+                        <td><strong>Subtotal</strong></td>
+                        <td class="text-right">
+                            <span t-field="o.amount_untaxed" t-options="{&quot;widget&quot;: &quot;monetary&quot;,&quot;display_currency&quot;: o.currency_id}"/>
+                        </td>
+                    </tr>
+                    <t t-set="tax_groups_length" t-value="len(o.amount_by_group)"/>
+                    <t t-foreach="o.amount_by_group" t-as="amount_by_group">
+                        <tr style="border-bottom:1px solid #dddddd;">
+                            <t t-if="len(o.tax_line_ids) == 1 and o.amount_untaxed == amount_by_group[2]">
+                                <td><span t-esc="amount_by_group[0]"/></td>
+                                <td class="text-right">
+                                    <span t-esc="amount_by_group[1]" t-options="{&quot;widget&quot;: &quot;monetary&quot;,&quot;display_currency&quot;: o.currency_id}"/>
+                                </td>
+                            </t>
+                            <t t-else="">
+                                <td>
+                                    <span t-esc="amount_by_group[0]"/>
+                                    <span>&amp;nbsp;<span>on</span>
+                                        <t t-esc="amount_by_group[2]" t-options="{&quot;widget&quot;: &quot;monetary&quot;,&quot;display_currency&quot;: o.currency_id}"/>
+                                    </span>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="amount_by_group[1]" t-options="{&quot;widget&quot;: &quot;monetary&quot;,&quot;display_currency&quot;: o.currency_id}"/>
+                                </td>
+                            </t>
+                        </tr>
+                    </t>
+                    <tr class="border-black">
+                        <td><strong>Total</strong></td>
+                        <td class="text-right">
+                            <span t-field="o.amount_total" t-options="{&quot;widget&quot;: &quot;monetary&quot;,&quot;display_currency&quot;: o.currency_id}"/>
+                        </td>
+                    </tr>
+                </table>
+            </xpath>
+            <xpath expr="//span[@t-field='line.price_subtotal']" position="replace">
+                <span t-field="line.price_total" t-if="o.on_margin"
+                      t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+                <span t-field="line.price_subtotal" t-if="not o.on_margin"
+                      t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+            </xpath>
+
+         </data>
+    </template>
+</odoo>

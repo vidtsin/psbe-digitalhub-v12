@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!-- remove taxes from cart total -->
+<template id="no_tax_cart_total" inherit_id="website_sale.total">
+
+    <xpath expr="//div[@id='cart_total']" position="before">
+        <t t-set="has_margin" t-value="any(website_sale_order.mapped('order_line.tax_id.on_margin'))"/>
+        <t t-set="is_public" t-value="request.env.user == request.website.user_id"/>
+        <t t-set="show_total_included" t-value="bool(is_public or (has_margin and not is_public))"/>
+    </xpath>
+
+    <xpath expr="//tr[@id='order_total_untaxed']//span[@t-field='website_sale_order.amount_untaxed']" position="replace">
+        <t t-if="not show_total_included">
+            <span
+                t-field="website_sale_order.amount_untaxed"
+                t-options="{
+                    'widget': 'monetary',
+                    'from_currency': website_sale_order.pricelist_id.currency_id,
+                    'display_currency': website.currency_id
+                }"
+                style="white-space: nowrap;"
+            />
+        </t>
+        <t t-else="">
+            <span
+                t-field="website_sale_order.amount_total"
+                t-options="{
+                    'widget': 'monetary',
+                    'from_currency': website_sale_order.pricelist_id.currency_id,
+                    'display_currency': website.currency_id
+                }"
+                style="white-space: nowrap;"
+            />
+        </t>
+    </xpath>
+
+    <xpath expr="//tr[@id='order_total_taxes']" position="replace">
+        <t t-if="not show_total_included">
+            <tr id="order_total_taxes">
+                <td class="text-right noborder" title="Taxes may be updated after providing shipping address"> Taxes:</td>
+                <td class="text-xl-right noborder">
+                    <span
+                        t-field="website_sale_order.amount_tax"
+                        t-options="{
+                            'widget': 'monetary',
+                            'from_currency': website_sale_order.pricelist_id.currency_id,
+                            'display_currency': website.currency_id
+                        }"
+                        style="white-space: nowrap;"
+                    />
+                </td>
+            </tr>
+        </t>
+    </xpath>
+
+</template>
+
+<template id="no_tax_cart" inherit_id="website_sale.cart_lines">
+
+    <xpath expr="//table[hasclass('js_cart_lines')]" position="before">
+        <t t-set="has_margin" t-value="any(website_sale_order.mapped('order_line.tax_id.on_margin'))"/>
+        <t t-set="is_public" t-value="request.env.user == request.website.user_id"/>
+        <t t-set="show_total_included" t-value="bool(is_public or (has_margin and not is_public))"/>
+    </xpath>
+
+    <xpath expr="//td[hasclass('td-price')]" position="replace">
+        <td class="text-center td-price" name="price">
+            <t t-if="(compute_currency(line.product_id.lst_price) - line.price_reduce ) &gt; 0.01  and website.get_current_pricelist().discount_policy=='without_discount'">
+                <del t-attf-class="#{'text-danger mr8'}" style="white-space: nowrap;" t-esc="compute_currency(line.product_id.website_public_price)" t-options="{'widget': 'monetary', 'display_currency': website.get_current_pricelist().currency_id, 'from_currency': website.currency_id}" />
+            </t>
+            <t t-if="not show_total_included">
+                <span t-field="line.price_reduce_taxexcl" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'from_currency': website_sale_order.pricelist_id.currency_id, 'display_currency': website.currency_id}"/>
+            </t>
+            <t t-else="">
+                <span t-field="line.price_reduce_taxinc" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'from_currency': website_sale_order.pricelist_id.currency_id, 'display_currency': website.currency_id}"/>
+            </t>
+        </td>
+    </xpath>
+
+</template>
+
+<template id="no_tax_payment" inherit_id="website_sale.cart_summary">
+
+    <xpath expr="//table[@id='cart_products']" position="before">
+        <t t-set="has_margin" t-value="any(website_sale_order.mapped('order_line.tax_id.on_margin'))"/>
+        <t t-set="is_public" t-value="request.env.user == request.website.user_id"/>
+        <t t-set="show_total_included" t-value="bool(is_public or (has_margin and not is_public))"/>
+    </xpath>
+
+    <xpath expr="//td[hasclass('td-price')]" position="replace">
+        <td class="text-center td-price" name="price">
+            <t t-if="not show_total_included">
+                <span t-field="line.price_reduce_taxexcl" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'from_currency': website_sale_order.pricelist_id.currency_id, 'display_currency': website.currency_id}"
+                groups="account.group_show_line_subtotals_tax_excluded"/>
+            </t>
+            <t t-else="">
+                <span t-field="line.price_reduce_taxinc" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'from_currency': website_sale_order.pricelist_id.currency_id, 'display_currency': website.currency_id}"
+                groups="account.group_show_line_subtotals_tax_included"/>
+            </t>
+        </td>
+    </xpath>
+
+</template>
+
+<template id="no_tax_confirmation" inherit_id="website_sale.confirmation">
+
+    <xpath expr="//table[hasclass('table')][1]" position="before">
+        <t t-set="has_margin" t-value="any(order.mapped('order_line.tax_id.is_on_margin'))"/>
+        <t t-set="is_public" t-value="request.env.user == request.website.user_id"/>
+        <t t-set="show_total_included" t-value="bool(is_public or (has_margin and not is_public))"/>
+    </xpath>
+
+    <!-- removed from v12-->
+    <!--<xpath expr="//th[last()]" position="replace">-->
+        <!--<th class="text-right td-price-total">Total</th>-->
+    <!--</xpath>-->
+
+    <!-- removed from v12-->
+    <!--<xpath expr="//td[hasclass('td-price')]" position="replace">-->
+        <!--<t t-if="not show_total_included">-->
+            <!--<td class='td-price'>-->
+                <!--<span class="text-right">-->
+                    <!--<div t-field="line.price_reduce_taxexcl"-->
+                        <!--t-options='{"widget": "monetary", "display_currency": order.pricelist_id.currency_id}'/>-->
+                <!--</span>-->
+            <!--</td>-->
+        <!--</t>-->
+        <!--<t t-else="">-->
+            <!--<td class='td-price'>-->
+                <!--<span class="text-right">-->
+                    <!--<div t-field="line.price_reduce_taxinc"-->
+                        <!--t-options='{"widget": "monetary", "display_currency": order.pricelist_id.currency_id}'/>-->
+                <!--</span>-->
+            <!--</td>-->
+        <!--</t>-->
+    <!--</xpath>-->
+
+    <!-- removed from v12-->
+    <!--<xpath expr="//td[hasclass('td-price-total')]/div" position="replace">-->
+        <!--<div-->
+            <!--class="text-right"-->
+            <!--t-field="line.price_total"-->
+            <!--t-options='{-->
+                <!--"widget": "monetary",-->
+                <!--"display_currency": order.pricelist_id.currency_id-->
+            <!--}'-->
+        <!--/>-->
+    <!--</xpath>-->
+
+    <!-- removed from v12-->
+    <!--<xpath expr="//table[hasclass('table')][2]" position="replace">-->
+        <!--<t t-if="show_total_included">-->
+            <!--<table class='table'>-->
+                <!--<tr>-->
+                    <!--<td class='noborder'></td>-->
+                    <!--<td class="text-right"><strong>Total:</strong></td>-->
+                    <!--<td class="text-right-not-xs text-left-xs">-->
+                        <!--<strong t-field="order.amount_total"-->
+                          <!--t-options='{"widget": "monetary", "display_currency": order.pricelist_id.currency_id}'/>-->
+                    <!--</td>-->
+                <!--</tr>-->
+            <!--</table>-->
+        <!--</t>-->
+        <!--<t t-else="">-->
+            <!--<table class='table'>-->
+                <!--<tr>-->
+                    <!--<td class="col-md-8"></td>-->
+                    <!--<td class="text-right-not-xs text-left-xs col-sm-2 col-xs-3">Subtotal:</td>-->
+                    <!--<td class="text-right col-sm-2 col-xs-3">-->
+                        <!--<span t-field="order.amount_untaxed" style="white-space: nowrap;" t-options="{'widget': 'monetary','from_currency': order.pricelist_id.currency_id,'display_currency': website.currency_id}" />-->
+                    <!--</td>-->
+                <!--</tr>-->
+                <!--<tr>-->
+                    <!--<td class='noborder'></td>-->
+                    <!--<td class="text-right noborder">Taxes:</td>-->
+                    <!--<td class="text-right-not-xs text-left-xs noborder">-->
+                       <!--<span t-field="order.amount_tax" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'from_currency': order.pricelist_id.currency_id, 'display_currency': website.currency_id}" />-->
+                    <!--</td>-->
+                <!--</tr>-->
+                <!--<tr>-->
+                    <!--<td class='noborder'></td>-->
+                    <!--<td class="text-right"><strong>Total:</strong></td>-->
+                    <!--<td class="text-right-not-xs text-left-xs">-->
+                        <!--<strong t-field="order.amount_total"-->
+                          <!--t-options='{"widget": "monetary", "display_currency": order.pricelist_id.currency_id}'/>-->
+                    <!--</td>-->
+                <!--</tr>-->
+            <!--</table>-->
+        <!--</t>-->
+    <!--</xpath>-->
+
+</template>
+
+<!--<template id="no_tax_optional_product" inherit_id="website_sale_options.modal">
+
+   &lt;!&ndash; <xpath expr="//td[@name='price']/span[@t-esc='product.website_price / quantity']" position="replace">
+        <span class="product_id" style="white-space: nowrap;"
+                t-att-data-product-id="product.id"
+                t-esc="product.website_price / quantity"
+                t-options='{
+                   "widget": "monetary",
+                   "display_currency": website.currency_id
+               }'/>
+    </xpath>&ndash;&gt;
+
+    <xpath expr="//td[hasclass('td-price')]/span[@t-field='product.website_price']" position="attributes">
+        <attribute name="class"></attribute>
+        <attribute name="t-field">product.lst_price</attribute>
+    </xpath>
+</template>-->
+
+</odoo>

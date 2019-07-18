@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="external_layout_standard_kiosk">
+        <div class="header">
+
+            <div class="row">
+                <div class="col-xs-3" style="border-bottom: 1px solid black;">
+                    <p>
+                    Carrefour Mont-Saint-Jean<br/>
+                    Chaussée de Charleroi, 579<br/>
+                    1410 Waterloo
+                    </p>
+                </div>
+                <div class="col-xs-9">
+                    <img src="/saleorder_kiosk_1877392/static/src/img/logo_carrefour.png" style="max-height: 65px;" class="pull-right"/>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="article o_report_layout_standard" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+            <t t-raw="0" />
+        </div>
+
+        <div class="footer">
+            <div class="text-center" style="border-top: 1px solid black;">
+                <!-- <ul class="list-inline mb4">
+                    <li t-if="company.phone">Phone: <span t-field="company.phone"/></li>
+                    <li t-if="company.email">Email: <span t-field="company.email"/></li>
+                    <li t-if="company.website">Web: <span t-field="company.website"/></li>
+                    <li t-if="company.vat"><t t-esc="company.country_id.vat_label or 'TIN'"/>: <span t-field="company.vat"/></li>
+                </ul>
+
+                <div name="financial_infos">
+                    <span t-field="company.report_footer"/>
+                </div> -->
+
+                <div class="text-muted">
+                    Page: <span class="page"/> / <span class="topage"/>
+                </div>
+            </div>
+        </div>
+    </template>
+
+
+
+    <template id="external_layout_inherit_kiosk" inherit_id="web.external_layout">
+        <!--replaced with following-->
+        <!--<xpath expr="//t[@t-if='company.external_report_layout_id']" position="replace">-->
+            <!--<t t-if="company.external_report_layout in (False, 'standard')">-->
+                <!--<t t-if="o and ('team_id' in o) and (o.team_id.id == 6)" t-call="saleorder_kiosk_1877392.external_layout_standard_kiosk"><t t-raw="0"/></t>-->
+                <!--<t t-if="not o or 'team_id' not in o or o.team_id.id != 6" t-call="web.external_layout_standard"><t t-raw="0"/></t>-->
+            <!--</t>-->
+        <!--</xpath>-->
+        <xpath expr="//t[@t-if='company.external_report_layout_id']" position="replace">
+            <t t-if="o and ('team_id' in o) and (o.team_id.id == 6)" t-call="saleorder_kiosk_1877392.external_layout_standard_kiosk"><t t-raw="0"/></t>
+            <t t-if="not o or 'team_id' not in o or o.team_id.id != 6" t-call="{{company.external_report_layout_id.key}}"><t t-raw="0"/></t>
+        </xpath>
+    </template>
+
+</odoo>

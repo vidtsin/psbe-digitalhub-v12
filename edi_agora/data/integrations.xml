@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+<record id="agora_integrate_products_ftp_connection" model="edi.connection">
+    <field name="name">Agora: Integrate Products FTP</field>
+    <field name="connection_type">ftp</field>
+    <field name="configuration">{
+        "host": "ftp.agora.place",
+        "user": "digitalhub",
+        "password": "aewiebu3Eeya"
+    }</field>
+    <field name="on_conflict">replace</field>
+</record>
+
+<record id="agora_products_integration" model="edi.integration">
+    <field name="name">Agora: Synchronize Product's Forecasted Quantity</field>
+    <field name="integration_type">out</field>
+    <field name="connection_id" ref="edi_agora.agora_integrate_products_ftp_connection"/>
+    <field name="res_model_id" ref="product.model_product_product"/>
+    <field name="provider_name">agora</field>
+    <field name="interval_number">8</field>
+    <field name="interval_type">hours</field>
+    <field name="usage">ir_cron</field>
+    <field name="state">code</field>
+    <field name="code">record.process_integration()</field>
+</record>
+
+</odoo>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+<record id="agora_pricelist" model="product.pricelist">
+    <field name="name">Agora Pricelist</field>
+</record>
+
+<record id="agora_partner" model="res.partner">
+    <field name="name">Agora</field>
+    <field name="property_product_pricelist" ref="edi_agora.agora_pricelist"/>
+</record>
+
+</odoo>

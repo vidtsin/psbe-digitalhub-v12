@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<odoo>
+    <record model="ir.ui.view" id="digital_hub_report_barcode">
+        <field name="name">Custo. Barcode report</field>
+        <field name="inherit_id" ref="stock.report_lot_label"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('page')]" position="replace">
+                <div class="page">
+                    <div class="oe_structure"/>
+                    <div class="row">
+                        <div class="col-xs-12" style="font-size: 14pt;">
+                            <t t-set="attribute_value" t-value="''"/>
+                            <t t-foreach="o.product_id.attribute_value_ids" t-as="a">
+                                <t t-set="attribute_value" t-value="attribute_value + a.name"/>
+                                <t t-if="len(o.product_id.attribute_value_ids) &gt; (a_index + 1)">
+                                    <t t-set="attribute_value" t-value="attribute_value + ', '"/>
+                                </t>
+                            </t>
+                            <span t-field="o.product_id.name"/>
+                            <span t-if="attribute_value"><span t-esc="attribute_value"/></span><br/>
+                            <span t-esc="o.product_id.default_code"/>
+                        </div>
+                        
+                    </div>
+                    <div class="row">
+                      <div>
+                          <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s&amp;humanreadable=1' % ('Code128', o.product_id.barcode, 1000, 500)" width='350' height='50'/>
+                        </div>
+                    </div>
+
+                    <br/>
+                     <div class="row">
+                          <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s&amp;humanreadable=1' % ('Code128', o.name, 1000, 500)" width='350' height='45'/>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

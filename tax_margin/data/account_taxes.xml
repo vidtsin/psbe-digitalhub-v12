@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="margin_21_tax" model="account.tax">
+        <field name="name">Tax sur marge 21%</field>
+        <field name="amount">21.0</field>
+        <field name="on_margin" eval="True"/>
+        <field name="amount_type">margin</field>
+        <field name="price_include" eval="True"/>
+    </record>
+    <record id="tax_margin_0" model="account.tax">
+        <field name="name">Tax sur marge 0%</field>
+        <field name="amount">0.00</field>
+        <field name="on_margin" eval="0"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="0">
+
+<record id="backmarket_pricelist" model="product.pricelist">
+    <field name="name">Backmarket Pricelist</field>
+</record>
+
+<record id="backmarket_partner" model="res.partner">
+    <field name="name">Backmarket</field>
+    <field name="property_product_pricelist" ref="edi_backmarket.backmarket_pricelist"/>
+</record>
+
+</odoo>
