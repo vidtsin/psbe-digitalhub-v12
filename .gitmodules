@@ -1,0 +1,4 @@
+[submodule "ps-internal"]
+	path = ps-internal
+	url = git@github.com:odoo/ps-internal.git
+	branch = 12.0-edi_framework
