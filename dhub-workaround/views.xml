@@ -19,6 +19,13 @@
             <xpath expr="//field[@name='qty_available']" position="attributes">
                 <attribute name="name">qty_available_stored</attribute>
             </xpath>
+            <xpath expr="//field[@name='virtual_available']" position="attributes">
+                <attribute name="name">virtual_available_stored</attribute>
+            </xpath>
+            <xpath expr="//tree" position="attributes">
+                <attribute name="decoration-danger">type == 'product' and virtual_available_stored&lt;0</attribute>
+                <attribute name="decoration-info">type != 'product' or virtual_available_stored&gt;=0</attribute>
+            </xpath>
         </field>
     </record>
     

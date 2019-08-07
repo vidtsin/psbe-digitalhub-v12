@@ -4,12 +4,8 @@ from odoo import models, fields, api
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
-    qty_available_stored = fields.Float(compute='_compute_qty_available_stored', store=True)
-
-    @api.depends('qty_available')
-    def _compute_qty_available_stored(self):
-        for rec in self:
-            rec.qty_available_stored = rec.qty_available
+    qty_available_stored = fields.Float(related='qty_available', store=True)
+    virtual_available_stored = fields.Float(related='virtual_available', store=True)
 
 
 class StockLocation(models.Model):
